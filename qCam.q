@@ -28,7 +28,7 @@ saveppm:{[filename;pic]
 //Updates the encoding from P6 to P5
 greyscale:{[pic]
  pic[`encoding]:`P5;
- pic[`data]:"x"$floor avg each 3 cut `int$pic[`data];
+ pic[`data]:"x"$floor avg peach 3 cut `int$pic[`data];
  pic
  }
 
@@ -63,9 +63,9 @@ zoom:{[pic;pixels] crop[pic;pixels-1;pixels-1;
 resize:{[pic;k]
  pic[`width]-:k; pic[`height]-:k; k+:1;
  x: til[(count pic[`data])-pic[`width]]; y:til k;
- pic[`data]:avg each (k*k) cut raze
+ pic[`data]:avg peach (k*k) cut raze
  {[x;y;z;k] z[`data][(x + y*z`width) + til k]}[;;pic;k] .' x cross y;
- pic[`data]:"x"$raze `int$floor _[1-k] each
+ pic[`data]:"x"$raze `int$floor _[1-k] peach
  pic[`width] cut pic`data;
  pic
  };
@@ -77,7 +77,7 @@ convolute:{[pic;kernel]
   (raze kernel)$(raze (pic[`data][y+til (count kernel)];
   pic[`data][(y+pic[`width])+til (count kernel)];
   pic[`data][(y+2*pic[`width])+til (count kernel)]))
- }[;kernel;pic] each til count pic[`data];
+ }[;kernel;pic] peach til count pic[`data];
  pic
  };
 
@@ -86,17 +86,17 @@ normalise:{[pic;lowerB;upperB]
  pixels:`int$pic[`data];
  c:min pixels;
  d:max pixels;
- pic[`data]:"x"${[x;c;d;b;a]((x-c)*((b-a)%(d-c)))+a}[;c;d;upperB;lowerB] each pixels;
+ pic[`data]:"x"${[x;c;d;b;a]((x-c)*((b-a)%(d-c)))+a}[;c;d;upperB;lowerB] peach pixels;
  pic
  };
 
 drawSingle:{
- x:raze {x:vs[2;x];(count[x]_8#0),x}each x;
+ x:raze {x:vs[2;x];(count[x]_8#0),x} peach x;
  16 cut @[x;where x=0;:;0N]
  };
 
 draw:{
- raze each flip drawSingle each x
+ raze peach flip drawSingle peach x
  };
 
 makePGM:{
