@@ -5,10 +5,10 @@ height:480;
 pixelformat:`RGB3;
 
 //Start the camera
-camera:startcamera[]
+camera:startcamera[width;height;pixelformat];
 
 //Create the prototype dictionary
-colourPic:`encoding`width`height`maxval`data!(`P6;width;height;255;())
+colourPic:`encoding`width`height`maxval`data!(`P6;width;height;255;());
 
 //Grab a frame from the camera
 colourPic[`data]:snap[camera;3*colourPic[`width]*colourPic[`height]];
@@ -59,4 +59,3 @@ savepgm[`:test/10_overlay] overlay[textPic;greyPic;50;floor %[;2] greyPic[`width
 {system"convert ",x," ",(first "." vs x),".jpg"} each string key `:.;
 
 exit 0
-

@@ -1,11 +1,11 @@
 \l arialBold.q
 
 //Starts the camera
-startcamera:{[]
+startcamera:{[width;height;pixelformat]
   //Start the driver which creates /dev/video0
-  system"sudo modprobe bcm2835-v4l2";
+  system"modprobe bcm2835-v4l2";
   //Start the camera
-  system"sudo v4l2-ctl -v width=",string[width],",height=",string[height],",pixelformat=",string[pixelformat];
+  system"v4l2-ctl -v width=",string[width],",height=",string[height],",pixelformat=",string[pixelformat];
   //Return a handle to the named pipe
   hopen`:fifo:///dev/video0
  };
@@ -21,8 +21,7 @@ snap:{[handle;size]
 //Saves a ppm as a P6 encoded RGB image to disk
 saveppm:{[filename;pic]
  hsym[`$"." sv string filename,`ppm] 1:
- string[pic`encoding],"\n",string[pic`width]," ",string[pic`height]," ",string[pic`maxval],
- "\n","c"$pic[`data];
+ string[pic`encoding],"\n",(" " sv string pic`width`height`maxval),"\n","c"$pic[`data];
  };
 
 //Converts our image to greyscale
@@ -36,7 +35,7 @@ greyscale:{[pic]
 //Saves pgm saves a P5 encoded greyscale image to disk
 savepgm:{[filename;pic]
  hsym[`$"." sv string filename,`pgm] 1:
- string[pic`encoding],"\n",string[pic`width]," ",string[pic`height]," ",string[pic`maxval],"\n",
+ string[pic`encoding],"\n",(" " sv string pic`width`height`maxval),"\n",
  "c"$pic`data;
  };
 
@@ -77,9 +76,8 @@ convolute:{[pic;kernel]
  pic[`data]:{[y;kernel;pic]
   (raze kernel)$(raze (pic[`data][y+til (count kernel)];
   pic[`data][(y+pic[`width])+til (count kernel)];
-  pic[`data][(y+2*pic[`width])+til (count kernel)]))}
-  [;kernel;pic] each
-  til count pic[`data];
+  pic[`data][(y+2*pic[`width])+til (count kernel)]))
+ }[;kernel;pic] each til count pic[`data];
  pic
  };
 
@@ -97,7 +95,8 @@ drawSingle:{
  16 cut @[x;where x=0;:;0N]
  };
 
-draw:{raze each flip drawSingle each x
+draw:{
+ raze each flip drawSingle each x
  };
 
 makePGM:{
